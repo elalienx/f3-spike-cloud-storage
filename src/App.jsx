@@ -1,6 +1,8 @@
-// Project files
+// Node modules
 import { useState } from "react";
-import { uploadImage } from "./scripts/cloudStorage";
+// Project files
+import Placeholder from "./assets/placeholder.jpg";
+import { uploadFile, downloadFile } from "./scripts/cloudStorage";
 
 /**
  * Learn to work with input files
@@ -12,21 +14,23 @@ import { uploadImage } from "./scripts/cloudStorage";
  */
 export default function App() {
   // Local state
-  const [image, setImage] = useState("");
+  const [image, setImage] = useState(Placeholder);
 
   // Methods
-  function onChange(event) {
+  async function onChange(event) {
     const file = event.target.files[0];
-    console.log(file);
+    const filePath = "my-images/pepito2.png";
+    let result = "";
 
-    setImage(file);
-    uploadImage(file, "my-images/", "pepito.png");
+    await uploadFile(file, filePath);
+    result = await downloadFile(filePath);
+
+    setImage(result);
   }
 
   return (
     <div className="App">
       <h1>Spike Cloud Storage</h1>
-
       <label>
         Choose a picture to upload:
         <img src={image} alt="Image preview" />

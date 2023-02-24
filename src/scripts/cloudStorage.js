@@ -1,15 +1,19 @@
 // Node modules
-import { ref, uploadBytes } from "firebase/storage";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 // Project files
 import { cloudStorage } from "./firebaseSetup";
 
-export function uploadImage(file, path, name) {
-  const fullPath = path + name;
-  const storageRef = ref(cloudStorage, fullPath);
+export async function uploadFile(file, filePath) {
+  const storageRef = ref(cloudStorage, filePath);
+  const snapshot = await uploadBytes(storageRef, file);
 
-  // 'file' comes from the Blob or File API
-  uploadBytes(storageRef, file).then((snapshot) => {
-    console.log("Uploaded a blob or file!", snapshot);
-  });
+  return `Uploaded file ${snapshot}`;
+}
+
+export async function downloadFile(filePath) {
+  const storageRef = ref(cloudStorage, filePath);
+  const result = await getDownloadURL(storageRef);
+
+  return result;
 }
